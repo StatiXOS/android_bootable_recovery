@@ -33,6 +33,7 @@ static std::vector<std::pair<std::string, Device::BuiltinAction>> g_menu_actions
   { "Apply update from SD card", Device::APPLY_SDCARD },
   { "Wipe data/factory reset", Device::WIPE_DATA },
   { "Wipe cache partition", Device::WIPE_CACHE },
+  { "Wipe data without sd", Device::WIPE_DATA_WITHOUT_SD },
   { "Mount /system", Device::MOUNT_SYSTEM },
   { "View recovery logs", Device::VIEW_RECOVERY_LOGS },
   { "Run graphics test", Device::RUN_GRAPHICS_TEST },

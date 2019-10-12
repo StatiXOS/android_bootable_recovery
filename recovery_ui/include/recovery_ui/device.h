@@ -58,6 +58,7 @@ class Device {
     REBOOT_FASTBOOT = 17,
     REBOOT_RECOVERY = 18,
     REBOOT_RESCUE = 19,
+    WIPE_DATA_WITHOUT_SD = 20,
   };
 
   explicit Device(RecoveryUI* ui);
