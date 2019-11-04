@@ -102,6 +102,14 @@ cc_library_static {
     ],
 }
 
+prebuilt_etc {
+    name: "init_recovery.rc",
+    filename: "init.rc",
+    src: "etc/init.rc",
+    sub_dir: "init/hw",
+    recovery: true,
+}
+
 cc_binary {
     name: "recovery",
     recovery: true,
@@ -128,6 +136,7 @@ cc_binary {
 
     required: [
         "e2fsdroid.recovery",
+        "init_recovery.rc",
         "librecovery_ui_ext",
         "minadbd",
         "mke2fs.conf.recovery",
@@ -135,6 +144,7 @@ cc_binary {
         "mkshrc.recovery",
         "reboot.recovery",
         "recovery_deps",
+        "ueventd.rc.recovery",
     ],
 }
 
