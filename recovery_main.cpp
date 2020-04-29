@@ -49,6 +49,7 @@
 #include <selinux/android.h>
 #include <selinux/label.h>
 #include <selinux/selinux.h>
+#include <volume_manager/VolumeManager.h>
 
 #include "fastboot/fastboot.h"
 #include "install/wipe_data.h"
@@ -61,6 +62,9 @@
 #include "recovery_ui/ui.h"
 #include "recovery_utils/logging.h"
 #include "recovery_utils/roots.h"
+
+using android::volmgr::VolumeInfo;
+using android::volmgr::VolumeManager;
 
 namespace fs = std::filesystem;
 
@@ -501,6 +505,18 @@ int main(int argc, char** argv) {
 
   if (!android::base::GetBoolProperty("ro.build.ab_update", false)) {
     device->RemoveMenuItemForAction(Device::SWAP_SLOT);
+  }
+
+  std::vector<VolumeInfo> volumes;
+  VolumeManager::Instance()->getVolumeInfo(volumes);
+  VolumeInfo* dataVol;
+  for (auto& volume : volumes) {
+    if (volume.mPath == "/data") {
+      dataVol = &volume;
+    }
+  }
+  if (!dataVol->mMountable) {
+    device->RemoveMenuItemForAction(Device::WIPE_DATA_EXCLUDE_MEDIA);
   }
 
   ui->SetBackground(RecoveryUI::NONE);
