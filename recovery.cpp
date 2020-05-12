@@ -31,6 +31,7 @@
 #include <functional>
 #include <iterator>
 #include <memory>
+#include <regex>
 #include <string>
 #include <vector>
 
@@ -723,9 +724,15 @@ Device::BuiltinAction start_recovery(Device* device, const std::vector<std::stri
     ui->SetStage(st_cur, st_max);
   }
 
-  std::vector<std::string> title_lines =
-      android::base::Split(android::base::GetProperty("ro.build.fingerprint", ""), ":");
-  title_lines.insert(std::begin(title_lines), "Lineage Recovery");
+  // Extract the YYYYMMDD date from the full version string. Assume
+  // the first instance of "-[0-9]{8}-" (if any) has the desired date.
+  std::string fullver = android::base::GetProperty("ro.statix.version", "");
+  std::string ver = fullver.substr(0,4);
+
+  std::vector<std::string> title_lines = {
+    "StatiXOS " + ver,
+    "Android " + android::base::GetProperty("ro.build.version.release", "(unknown)"),
+  };
   ui->SetTitle(title_lines);
 
   ui->ResetKeyInterruptStatus();
