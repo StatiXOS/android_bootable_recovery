@@ -23,6 +23,8 @@
 
 struct selabel_handle;
 
+std::string fs_wipe_to;
+
 // Returns true on success.
 bool WipeCache(RecoveryUI* ui, const std::function<bool()>& confirm);
 
@@ -31,3 +33,6 @@ bool WipeData(Device* device, bool convert_fbe);
 
 // Returns true on success.
 bool WipeSystem(RecoveryUI* ui, const std::function<bool()>& confirm);
+
+// Sets wipe fs for /data
+void SetWipeFs(std::string fs);

@@ -56,6 +56,7 @@ static std::vector<menu_action_t> g_wipe_actions{
   { "Format data/factory reset", Device::WIPE_DATA },
   { "Format cache partition", Device::WIPE_CACHE },
   { "Format system partition", Device::WIPE_SYSTEM },
+  { "Choose filesystem to format /data to", Device::CHOOSE_WIPE_FS },
 };
 
 static std::vector<menu_action_t>* current_menu_ = &g_main_actions;
