@@ -184,6 +184,17 @@ bool ask_to_continue_downgrade(Device* device) {
     return yes_no(device, "This package will downgrade your system", "Install anyway?");
 }
 
+static bool choose_f2fs(Device* device) {
+  std::vector<std::string> headers{ "Choose what filesystem you want to use on /data", "Entries here are supported by your device." };
+  std::vector<std::string> items = get_data_fs_items();
+
+  size_t chosen_item = device->GetUI()->ShowMenu(
+      headers, items, 0, true,
+      std::bind(&Device::HandleMenuKey, device, std::placeholders::_1, std::placeholders::_2));
+
+  return (get_data_fs_items()[chosen_item] == "f2fs");
+}
+
 static bool ask_to_wipe_data(Device* device) {
   std::vector<std::string> headers{ "Format user data?", "This includes internal storage.", "THIS CANNOT BE UNDONE!" };
   std::vector<std::string> items{ " Cancel", " Format data" };
@@ -532,6 +543,14 @@ change_menu:
           return yes_no(device, "Format system?", "  THIS CAN NOT BE UNDONE!");
         };
         WipeSystem(ui, ui->IsTextVisible() ? confirm_func : nullptr);
+        if (!ui->IsTextVisible()) return Device::NO_ACTION;
+        break;
+      }
+
+      case Device::CHOOSE_WIPE_FS: {
+        save_current_log = true;
+        std::string fs = choose_f2fs(device) ? "f2fs" : "ext4";
+        SetWipeFs(fs);
         if (!ui->IsTextVisible()) return Device::NO_ACTION;
         break;
       }

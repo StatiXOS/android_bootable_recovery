@@ -76,7 +76,11 @@ static bool EraseVolume(const char* volume, RecoveryUI* ui, bool convert_fbe) {
       return false;
     }
     fclose(f);
-    result = format_volume(volume, CONVERT_FBE_DIR);
+    if (fs_wipe_to == "") {
+      result = format_volume(volume, CONVERT_FBE_DIR, vol->fs_type);
+    } else {
+      result = format_volume(volume, CONVERT_FBE_DIR, fs_wipe_to);
+    }
     remove(CONVERT_FBE_FILE);
     rmdir(CONVERT_FBE_DIR);
   } else {
@@ -143,4 +147,8 @@ bool WipeSystem(RecoveryUI* ui, const std::function<bool()>& confirm_func) {
   bool success = EraseVolume(android::fs_mgr::GetSystemRoot().c_str(), ui, false);
   ui->Print("System wipe %s.\n", success ? "complete" : "failed");
   return success;
+}
+
+void SetWipeFs(std::string fs) {
+  fs_wipe_to = fs;
 }
