@@ -38,7 +38,7 @@ constexpr const char* CACHE_ROOT = "/cache";
 constexpr const char* DATA_ROOT = "/data";
 constexpr const char* METADATA_ROOT = "/metadata";
 
-static bool EraseVolume(const char* volume, RecoveryUI* ui, bool convert_fbe) {
+static bool EraseVolume(const char* volume, RecoveryUI* ui, bool convert_fbe, std::string fs) {
   bool is_cache = (strcmp(volume, CACHE_ROOT) == 0);
   bool is_data = (strcmp(volume, DATA_ROOT) == 0);
 
@@ -52,7 +52,7 @@ static bool EraseVolume(const char* volume, RecoveryUI* ui, bool convert_fbe) {
     log_files = ReadLogFilesToMemory();
   }
 
-  ui->Print("Formatting %s...\n", volume);
+  ui->Print("Formatting %s to %s...\n", volume, fs.c_str());
 
   Volume* vol = volume_for_mount_point(volume);
   if (ensure_volume_unmounted(vol->blk_device) == -1) {
@@ -76,9 +76,11 @@ static bool EraseVolume(const char* volume, RecoveryUI* ui, bool convert_fbe) {
       return false;
     }
     fclose(f);
-    result = format_volume(volume, CONVERT_FBE_DIR);
+    result = format_volume(volume, CONVERT_FBE_DIR, fs);
     remove(CONVERT_FBE_FILE);
     rmdir(CONVERT_FBE_DIR);
+  } else if (is_data) {
+    result = format_volume(volume, "", fs);
   } else {
     result = format_volume(volume);
   }
@@ -88,6 +90,10 @@ static bool EraseVolume(const char* volume, RecoveryUI* ui, bool convert_fbe) {
   }
 
   return (result == 0);
+}
+
+static bool EraseVolume(const char* volume, RecoveryUI* ui, bool convert_fbe) {
+  return EraseVolume(volume, ui, convert_fbe, "");
 }
 
 bool WipeCache(RecoveryUI* ui, const std::function<bool()>& confirm_func) {
@@ -109,6 +115,18 @@ bool WipeCache(RecoveryUI* ui, const std::function<bool()>& confirm_func) {
 
 bool WipeData(Device* device, bool convert_fbe) {
   RecoveryUI* ui = device->GetUI();
+  std::vector<std::string> headers{ "Choose what filesystem you want to use on /data", "Entries here are supported by your device." };
+  std::vector<std::string> items = get_data_fs_items();
+
+  if (items.size() > 1) {
+      size_t chosen_item = ui->ShowMenu(
+          headers, items, 0, true,
+          std::bind(&Device::HandleMenuKey, device, std::placeholders::_1, std::placeholders::_2));
+      std::string fs = items[chosen_item];
+  } else {
+      std::string fs = volume_for_mount_point("/data").fs_type;
+  }
+
   ui->Print("\n-- Wiping data...\n");
 
   if (!FinishPendingSnapshotMerges(device)) {
@@ -118,7 +136,7 @@ bool WipeData(Device* device, bool convert_fbe) {
 
   bool success = device->PreWipeData();
   if (success) {
-    success &= EraseVolume(DATA_ROOT, ui, convert_fbe);
+    success &= EraseVolume(DATA_ROOT, ui, convert_fbe, fs);
     bool has_cache = volume_for_mount_point("/cache") != nullptr;
     if (has_cache) {
       success &= EraseVolume(CACHE_ROOT, ui, false);
