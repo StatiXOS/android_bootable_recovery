@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b9732149_f1235fa5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2021-01-02T17:35:28Z",
+      "side": 1,
+      "message": "Comment removed by: Sourajit Karmakar; Reason: good idea and it works ",
+      "revId": "3c761adad42f5eb7688cdbbff0b28c518d621dc6",
+      "serverId": "039621b9-0c7c-40f3-867c-684f4bc911d6"
+    }
+  ]
+}
