@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c0b2c900_fe0cc486",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000125
+      },
+      "writtenOn": "2023-02-27T17:17:28Z",
+      "side": 1,
+      "message": "Saving me a lot of time sideloading :D",
+      "revId": "2a842083b788ee06668760fb07f6d954921f4ffa",
+      "serverId": "039621b9-0c7c-40f3-867c-684f4bc911d6"
+    }
+  ]
+}
