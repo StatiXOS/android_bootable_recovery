@@ -169,13 +169,13 @@ bool WipeData(Device* device, bool keep_memtag_mode, std::string_view data_fstyp
   return success;
 }
 
-bool WipeSystem(RecoveryUI* ui, const std::function<bool()>& confirm_func) {
+bool WipeSystem(RecoveryUI* ui, const std::function<bool()>& confirm_func, std::string_view system_fstype) {
   if (confirm_func && !confirm_func()) {
     return false;
   }
 
   ui->Print("\n-- Wiping system...\n");
-  bool success = EraseVolume(android::fs_mgr::GetSystemRoot().c_str(), ui);
+  bool success = EraseVolume(android::fs_mgr::GetSystemRoot().c_str(), ui, system_fstype);
   ui->Print("System wipe %s.\n", success ? "complete" : "failed");
   return success;
 }
