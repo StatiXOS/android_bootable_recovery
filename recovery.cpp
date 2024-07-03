@@ -829,8 +829,7 @@ Device::BuiltinAction start_recovery(Device* device, const std::vector<std::stri
 
   // Extract the YYYYMMDD date from the full version string. Assume
   // the first instance of "-[0-9]{8}-" (if any) has the desired date.
-  std::string fullver = android::base::GetProperty("ro.statix.version", "");
-  std::string ver = fullver.substr(0,4);
+  std::string ver = android::base::GetProperty("ro.statix.base.version", "");
 
   std::vector<std::string> title_lines = {
     "StatiXOS " + ver,
